@@ -1,41 +1,35 @@
 package org.example;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 public final class TextAnalyzer {
     public static int characterCountAnalyzer(String txt) {
-        int charCount = 0;
-        for (int i = 0; i < txt.length(); i++)
-            if (!Character.isWhitespace(txt.charAt(i)))
-                charCount++;
-        return charCount;
+        return Math.toIntExact(txt.chars().
+                filter(character -> !Character.isWhitespace(character))
+                .count());
     }
 
 
     public static int wordCoountAnalyzer(String txt) {
-        String[] words = txt.split("\\s");
-        int count = 0;
-        for (String word : words) {
-            count++;
-        }
-        return count;
+        return Math.toIntExact(Arrays.stream(txt.split("\\s"))
+                .filter(word -> !word.isBlank())
+                .count());
     }
 
-    public static String longerWordCoountAnalyzer(String txt) {
-        String longestWord = "";
-        String[] words = txt.split(" ");
-        for (String word : words)
-            if (word.length() > longestWord.length())
-                longestWord = word;
-
-        return longestWord;
+    public static String longestWordCoountAnalyzer(String txt) {
+        return Arrays.stream(txt.split("\\s"))
+                .filter(word -> !word.isBlank())
+                .max(Comparator.comparingInt(String::length))
+                .orElse("");
     }
 
     public static double AverageWordLengthAnalyzer(String txt) {
-        String[] words = txt.split(" ");
-        double wordLength = 0;
-        for (String word : words)
-            wordLength += word.length();
-
-        return wordLength / words.length;
+        return Arrays.stream(txt.split("\\s"))
+                .filter(word -> !word.isBlank())
+                .mapToInt(String::length)
+                .average()
+                .orElse(0.0);
     }
 
 
@@ -45,7 +39,7 @@ public final class TextAnalyzer {
 
         int wordCount = wordCoountAnalyzer(text);
         int characterCountExcludingWhitespace = characterCountAnalyzer(text);
-        String longestWord = longerWordCoountAnalyzer(text);
+        String longestWord = longestWordCoountAnalyzer(text);
         double averageWordLength = AverageWordLengthAnalyzer(text);
 
         return new TextAnalysisResult(wordCount, characterCountExcludingWhitespace, longestWord, averageWordLength);
